@@ -1,0 +1,462 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Individual Tree Detection},
+  pdfauthor={Sam Ericksen, Oren Nardi},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newlength{\cslentryspacingunit} % times entry-spacing
+\setlength{\cslentryspacingunit}{\parskip}
+\newenvironment{CSLReferences}[2] % #1 hanging-ident, #2 entry spacing
+ {% don't indent paragraphs
+  \setlength{\parindent}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1
+  \let\oldpar\par
+  \def\par{\hangindent=\cslhangindent\oldpar}
+  \fi
+  % set entry spacing
+  \setlength{\parskip}{#2\cslentryspacingunit}
+ }%
+ {}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{#1\hfill\break}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{#1}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\title{Individual Tree Detection}
+\author{Sam Ericksen, Oren Nardi}
+\date{2022-03-15}
+
+\begin{document}
+\maketitle
+
+data collected by Oren Nardi, at College of the Redwoods campus in
+Eureka.
+
+Paper and code snippets by Sam Ericksen
+
+Images processed in WebODM using the defualt ``Forest'' parameters
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(lidR)}
+\FunctionTok{library}\NormalTok{(lidRplugins)}
+\FunctionTok{library}\NormalTok{(raster)}
+\FunctionTok{library}\NormalTok{(rgdal)}
+\FunctionTok{library}\NormalTok{(rgl)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{reading-a-point-cloud}{%
+\subsection{Reading a Point Cloud}\label{reading-a-point-cloud}}
+
+First, using the LidR package, we read in the dataset in question. In
+this case, to make the script more universally available for all users
+we use the choose.file() function. This function opens a file explorer
+box that allows the user to choose any file from there computer as they
+wish. We also want to do a quick initial validity test on the data -
+simply plotting it.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{las }\OtherTok{\textless{}{-}} \FunctionTok{readLAS}\NormalTok{(}\FunctionTok{file.choose}\NormalTok{())}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics[width=6.5in]{C:\Users\samer\AppData\Local\Temp\RtmpyoHRne\file26f865111da0}
+
+We can also run a deep check on the las to see if any issues are present
+that may impede future analysis using las\_check(). It's also nice to
+check and see if the file is already normalized visually, this can be
+done by plotting the minimum height values.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# las\_check(las)}
+
+\FunctionTok{epsg}\NormalTok{(las) }\DocumentationTok{\#\#get the coordinate system of the file.  Here we get 32610, which has a vertical unit of meters, so we know the Z values will be in meters}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 32610
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# plot(pixel\_metrics(las, \textasciitilde{}min(Z), res = 10))}
+\DocumentationTok{\#\# }
+\DocumentationTok{\#\# min(las@data$Z)}
+\DocumentationTok{\#\# }
+\end{Highlighting}
+\end{Shaded}
+
+Here both las\_check() and a plot of minimum height values indicate a
+non-normalized point cloud (all values are above 0 meters).
+Additionally, the deep check of the file indicates a few interesting
+anomolies that need to be addressed:
+
+\begin{itemize}
+\tightlist
+\item
+  There are a few duplicate points that should be filtered out
+\item
+  Ground points are not classified
+\item
+  There is some issue with the RGB data, but this is likely only an
+  issue for LidR, and can be ignored for now
+\end{itemize}
+
+Duplicates can be filtered very quickly:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{las }\OtherTok{\textless{}{-}} \FunctionTok{filter\_duplicates}\NormalTok{(las)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{classifying-ground-points}{%
+\subsection{Classifying Ground Points}\label{classifying-ground-points}}
+
+When working with point clouds derived from photogrammetry, there is
+often no classifications initially associated with the points. ASPRS
+provides a
+\href{chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/viewer.html?pdfurl=https\%3A\%2F\%2Fwww.asprs.org\%2Fwp-content\%2Fuploads\%2F2010\%2F12\%2FLAS_Specification.pdf\&clen=3783348\&chunk=true}{structure
+for classification of point clouds} to work with, but for now our main
+concern are ground points. Without ground points classified it is not
+possible to create a canopy height model, as the canopy height is
+derived in relation to the ground surface.
+
+When we plotted the point cloud earlier we noticed that there aren't
+many points under the canopy, this makes ground classification a little
+tricky. Fortunately, there were ground points collected on the outskirts
+of the area of interest, so we can work with that.
+
+Because of the lack of ground under the canopy we will use a Cloth
+Simulation Filter (Zhang et al. 2016). There are a few attributes that
+can be adjusted by the user, and the most important in this case is
+cloth rigidness, although 2L is generally for flat ground, to force some
+interpretation of the under-canopy ground we will use this setting. Once
+ground points are classified we plot just the ground points (ASPRS class
+2L) to see how it performed.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{las }\OtherTok{\textless{}{-}} \FunctionTok{classify\_ground}\NormalTok{(las, }\FunctionTok{csf}\NormalTok{(}\AttributeTok{rigidness =}\NormalTok{ 2L))}
+
+\FunctionTok{plot}\NormalTok{(}\FunctionTok{pixel\_metrics}\NormalTok{(las[las}\SpecialCharTok{@}\NormalTok{data}\SpecialCharTok{$}\NormalTok{Classification}\SpecialCharTok{==}\NormalTok{2L], }\SpecialCharTok{\textasciitilde{}}\FunctionTok{mean}\NormalTok{(Z), }\AttributeTok{res =} \DecValTok{2}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{IDT_cor1_files/figure-latex/classify gound-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(las[las}\SpecialCharTok{@}\NormalTok{data}\SpecialCharTok{$}\NormalTok{Classification}\SpecialCharTok{==}\NormalTok{2L])}
+\end{Highlighting}
+\end{Shaded}
+
+Plotting the average height value of the ground points shows that there
+are clearly some miss-classified ground points back where the canopy is
+very dense (Northeast corner). It looks like we can safely remove ground
+points above 40m during creation of a canopy height model.
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{creating-a-canopy-height-model}{%
+\subsection{Creating a Canopy Height
+Model}\label{creating-a-canopy-height-model}}
+
+The first step in creating a canopy height model will be the creation of
+a digital terrain model (DTM). There are a three methods of this
+included in the LidR package:
+
+\begin{itemize}
+\item
+  K-Nearest Neighbor Methods
+
+  \begin{itemize}
+  \item
+    Inverse Distance Weighting
+  \item
+    Krigging
+  \end{itemize}
+\item
+  Delaunay Triagulation
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{grnd\_points }\OtherTok{\textless{}{-}} \FunctionTok{filter\_poi}\NormalTok{(las, Classification }\SpecialCharTok{==}\NormalTok{ 2L, Z }\SpecialCharTok{\textless{}} \DecValTok{40}\NormalTok{) }\DocumentationTok{\#\#filter point cloud to include only non{-}anomalous ground points}
+
+\NormalTok{idw\_terrain }\OtherTok{\textless{}{-}} \FunctionTok{rasterize\_terrain}\NormalTok{(grnd\_points, }\AttributeTok{algorithm =} \FunctionTok{knnidw}\NormalTok{())}
+\NormalTok{krig\_terrain }\OtherTok{\textless{}{-}} \FunctionTok{rasterize\_terrain}\NormalTok{(grnd\_points, }\AttributeTok{algorithm =} \FunctionTok{kriging}\NormalTok{())}
+\NormalTok{tin\_terrain }\OtherTok{\textless{}{-}} \FunctionTok{rasterize\_terrain}\NormalTok{(grnd\_points, }\AttributeTok{algorithm =} \FunctionTok{tin}\NormalTok{())}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics[width=0.5\linewidth]{IDT_cor1_files/figure-latex/DTM creation-1}
+\includegraphics[width=0.5\linewidth]{IDT_cor1_files/figure-latex/DTM creation-2}
+\includegraphics[width=0.5\linewidth]{IDT_cor1_files/figure-latex/DTM creation-3}
+
+Here we can see the Kriging does not deal with extrapolation well with
+default parameters. IDW and TINing seem to give reasonable outputs and a
+closer inspection seems to indicate that TINing gave a smother slope
+transition when extrapolating under-canopy ground points. We will
+continue with the canopy height model using the DTM created using
+TINing, but one couldn't be blamed for considering using the IDW terrain
+model either.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# normalize the point cloud heights}
+\NormalTok{las\_norm }\OtherTok{\textless{}{-}} \FunctionTok{normalize\_height}\NormalTok{(las, }\AttributeTok{algorithm =}\NormalTok{ tin\_terrain)}
+\FunctionTok{plot}\NormalTok{(}\FunctionTok{pixel\_metrics}\NormalTok{(las\_norm, }\SpecialCharTok{\textasciitilde{}}\FunctionTok{max}\NormalTok{(Z), }\AttributeTok{res =} \DecValTok{2}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{IDT_cor1_files/figure-latex/canopy height model-1.pdf}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\hypertarget{classify-noise}{%
+\subsection{Classify Noise}\label{classify-noise}}
+
+Upon close inspection of the dataset there does appear to be some
+non-contiguous points, specifically near tops of trees. Ground control
+tree measurements, taken by Oren Nardi, indicate the tallest tree to be
+around 150', while the current maximum normalized height is over 170'.
+It is possible that some of this is due to the
+
+*Trim extents
+
+\hypertarget{trimming-extents}{%
+\subsubsection{Trimming Extents}\label{trimming-extents}}
+
+The first thing we want to do is trim the extents of the point cloud to
+the area of interest. We can use our map from earlier to get some
+extents from:
+
+\includegraphics{IDT_cor1_files/figure-latex/map of area-1.pdf}
+
+Here it looks like the extents of the forest are about (399110 ,4505920,
+399280, 4506080)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{las\_norm\_clip }\OtherTok{\textless{}{-}} \FunctionTok{clip\_rectangle}\NormalTok{(las\_norm, }\DecValTok{399110}\NormalTok{,}\DecValTok{4505920}\NormalTok{, }\DecValTok{399280}\NormalTok{, }\DecValTok{4506080}\NormalTok{)}
+
+\FunctionTok{plot}\NormalTok{(}\FunctionTok{pixel\_metrics}\NormalTok{(las\_norm\_clip, }\SpecialCharTok{\textasciitilde{}}\FunctionTok{mean}\NormalTok{(Z), }\AttributeTok{res =} \DecValTok{1}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{IDT_cor1_files/figure-latex/plot map-1.pdf}
+
+Great, that's a pretty good cut bounding box for the forested area. Now
+we need to filter out flat areas, as local maximum filters will pick up
+slight variations in these areas and miss-classify them as trees.
+
+\hypertarget{removing-non-tree-values}{%
+\subsubsection{Removing Non-Tree
+Values}\label{removing-non-tree-values}}
+
+Looking at the map above it is pretty clear that no trees are under 5m
+with enough overlap to be captured in photogrammetry. So we can filter
+those out, and we can also filter out ground points.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{las\_Trees }\OtherTok{\textless{}{-}} \FunctionTok{filter\_poi}\NormalTok{(las\_norm\_clip, Classification }\SpecialCharTok{!=}\NormalTok{ 2L, Z }\SpecialCharTok{\textgreater{}} \DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in snapshot3d(scene = x, width = width, height = height): webshot = TRUE
+## requires the webshot2 package; using rgl.snapshot() instead
+\end{verbatim}
+
+\includegraphics[width=6.5in]{C:\Users\samer\AppData\Local\Temp\RtmpyoHRne\file26f82200ad9}
+
+Nice, that looks like a bunch of trees! a few outlying points still
+though, lets see if a noise filter will take care of that.
+
+\hypertarget{noise-classification}{%
+\subsubsection{Noise Classification}\label{noise-classification}}
+
+The lidR package supports two methods for noise classification,
+Statistical Outliers Removal (SOR) which just removes points that are
+considered outliers by being some multiple of standard deviations from
+the mean height, or an Isolated Voxels Filter (IVF) which voxelizes the
+point cloud, and removes cuboids of points which have less than a
+specified number of points in their surrounding voxels.
+
+We can see in the previous 3D plot that most of our outlying points are
+actually detached from from neighbors. This is the method we will use as
+many of our outlying points are discontiguous from our forest points.
+
+Finally we smooth the cloud out slightly, just as a measure to avoid
+multiple maxima in small areas (sometimes caused by split crowns or
+noisy points)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{las\_trees\_ivf }\OtherTok{\textless{}{-}}\NormalTok{ las\_Trees }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{classify\_noise}\NormalTok{(}\FunctionTok{ivf}\NormalTok{(}\AttributeTok{res =}\NormalTok{ .}\DecValTok{5}\NormalTok{,  }\AttributeTok{n =} \DecValTok{40}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%} 
+  \FunctionTok{filter\_poi}\NormalTok{(las\_Trees}\SpecialCharTok{@}\NormalTok{data}\SpecialCharTok{$}\NormalTok{Classification}\SpecialCharTok{!=}\DecValTok{18}\NormalTok{)}
+
+\NormalTok{smooth\_ivf }\OtherTok{\textless{}{-}} \FunctionTok{smooth\_height}\NormalTok{(las\_trees\_ivf, }\DecValTok{1}\NormalTok{, }\StringTok{\textquotesingle{}gaussian\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}circle\textquotesingle{}}\NormalTok{, }\AttributeTok{sigma =} \DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in snapshot3d(scene = x, width = width, height = height): webshot = TRUE
+## requires the webshot2 package; using rgl.snapshot() instead
+\end{verbatim}
+
+\includegraphics[width=6.5in]{C:\Users\samer\AppData\Local\Temp\RtmpyoHRne\file26f87e9526bf}
+
+\hypertarget{individual-tree-detection}{%
+\subsection{Individual Tree Detection}\label{individual-tree-detection}}
+
+(Young, Koontz, and Weeks 2021)
+
+\hypertarget{still-to-come}{%
+\subsection{Still To Come\ldots{}}\label{still-to-come}}
+
+\begin{itemize}
+\item
+  \emph{Individual Tree Detection}
+\item
+  \emph{Indv. Tree points geometry}
+\item
+  \emph{plot CHM with individual trees overlaid}
+\end{itemize}
+
+\hypertarget{references}{%
+\subsection*{References}\label{references}}
+\addcontentsline{toc}{subsection}{References}
+
+\hypertarget{refs}{}
+\begin{CSLReferences}{1}{0}
+\leavevmode\vadjust pre{\hypertarget{ref-young2021}{}}%
+Young, Derek J. N., Michael J. Koontz, and JonahMaria Weeks. 2021.
+{``Optimizing Aerial Imagery Collection and Processing Parameters for
+Drone-Based Individual Tree Mapping in Structurally Complex Conifer
+Forests,''} September. \url{https://doi.org/10.32942/osf.io/p7ygu}.
+
+\leavevmode\vadjust pre{\hypertarget{ref-zhang2016b}{}}%
+Zhang, Wuming, Jianbo Qi, Peng Wan, Hongtao Wang, Donghui Xie, Xiaoyan
+Wang, and Guangjian Yan. 2016. {``An Easy-to-Use Airborne LiDAR Data
+Filtering Method Based on Cloth Simulation.''} \emph{Remote Sensing} 8
+(6): 501. \url{https://doi.org/10.3390/rs8060501}.
+
+\end{CSLReferences}
+
+\end{document}

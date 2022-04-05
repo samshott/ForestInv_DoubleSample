@@ -1,0 +1,107 @@
+---
+title: "Individual Tree Detection"
+author: "Sam Ericksen, Oren Nardi"
+date: '2022-03-15'
+output:
+  pdf_document: default
+  html_document: default
+bibliography: references.bib
+---
+
+data collected by Oren Nardi, at College of the Redwoods campus in Eureka.
+
+Images processed in WebODM using the defualt "Forest" parameters
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(lidR)
+library(lidRplugins)
+library(raster)
+library(rgdal)
+```
+
+## Reading a Point Cloud
+
+First, using the LidR package, we read in the dataset in question. In this case, to make the script more universally available for all users we use the choose.file() function. This function opens a file explorer box that allows the user to choose any file from there computer as they wish. We also want to do a quick initial validity test on the data - simply ploting it.
+
+```{r read pointcloud, error=FALSE, eval=c(1)}
+las <- readLAS(file.choose())
+
+plot(las) ## initiates a 3D plot, must be run in R
+
+```
+
+We can also run a deep check on the las to see if any issues are present that may impede future analysis using las_check(). It's also nice to check and see if the file is already normalized visually, this can be done by plotting the minimum height values.
+
+```{r check pointcloud}
+las_check(las)
+
+epsg(las) ##get the coordinate system of the file.  Here we get 32610, which has a vertical unit of meters, so we know the Z values will be in meters
+
+plot(pixel_metrics(las, ~min(Z), res = 10))
+
+min(las@data$Z)
+
+```
+
+Here both las_check() and a plot of minimum height values indicate a non-normalized point cloud (all values are above 0 meters). Additionally, the deep check of the file indicates a few interesting anomolies that need to be addressed:
+
+-   There are a few duplicate points that should be filtered out
+-   Ground points are not classified
+-   There is some issue with the RGB data, but this is likely only an issue for LidR, and can be ignored for now
+
+Duplicates can be filtered very quickly:
+
+```{r duplicate filter}
+las <- filter_duplicates(las)
+```
+
+## Classifying Ground Points
+
+When working with point clouds derived from photogrammetry, there is often no classifications initially associated with the points. ASPRS provides a [structure for classification of point clouds](chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/viewer.html?pdfurl=https%3A%2F%2Fwww.asprs.org%2Fwp-content%2Fuploads%2F2010%2F12%2FLAS_Specification.pdf&clen=3783348&chunk=true) to work with, but for now our main concern are ground points. Without ground points classified it is not possible to create a canopy height model, as the canopy height is derived in relation to the ground surface.
+
+When we plotted the point cloud earlier we noticed that there aren't many points under the canopy, this makes ground classification a little tricky. Fortunately, there were ground points collected on the outskirts of the area of interest, so we can work with that.
+
+Because of the lack of ground under the canopy we will use a Cloth Simulation Filter [@zhang2016]. There are a few attributes that can be adjusted by the user, and the most important in this case is cloth rigidness, although 3L is generally for flat ground, to force some interpretation of the under-canopy ground we will use this setting. Once ground points are classified we plot just the ground points (ASPRS class 2L) to see how it performed.
+
+```{r classify gound, eval=1:3}
+
+las <- classify_ground(las, csf(rigidness = 2L))
+
+plot(pixel_metrics(las[las@data$Classification==2L], ~mean(Z), res = 2))
+
+plot(las[las@data$Classification==2L])
+```
+
+Plotting the average height value of the ground points shows that there are clearly some miss-classified ground points back where the canopy is very dense (Northeast corner). It looks like we can safely remove ground points above 40m during creation of a canopy height model.
+
+## Creating a Canopy Height Model
+
+The first step in creating a canopy height model will be the creation of a digital terrain model (DTM). There are a three methods of this included in the LidR package:
+
+-   K-Nearest Neighbor Methods
+
+    -   Inverse Distance Weighting
+
+    -   Krigging
+
+-   Delaunay Triagulation
+
+```{r DTM creation, echo=1:5}
+grnd_points <- filter_poi(las, Classification == 2L, Z < 40) ##filter point cloud to include only non-anomalous ground points
+
+idw_terrain <- rasterize_terrain(grnd_points, algorithm = knnidw())
+krig_terrain <- rasterize_terrain(grnd_points, algorithm = kriging())
+tin_terrain <- rasterize_terrain(grnd_points, algorithm = tin())
+
+raster::plot(idw_terrain, 
+             main = "Inverse Distance Weighting DTM")
+raster::plot(krig_terrain, 
+             main = "kriging DTM")
+raster::plot(tin_terrain, 
+             main = "Delaunay Trianglation DTM")
+```
+
+Here we can see the Kriging does not deal with extrapolation well with default parameters. IDW and TINing seem to give reasonable outputs and a closer inspection seems to indicate that TINing gave a smother slope transition when extrapolating under-canopy ground points. We will continue with the canopy height model using the DTM created using TINing, but one couldn't be blamed for considering using the IDW terrain model either.
+
+
