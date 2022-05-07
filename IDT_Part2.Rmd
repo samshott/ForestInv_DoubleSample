@@ -1,0 +1,30 @@
+---
+title: "IDT_Part2"
+author: "Sam Ericksen"
+date: '2022-05-07'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+rgl::setupKnitr(autoprint = TRUE)
+options(rgl.useNULL = TRUE)
+```
+
+Now that we've prepped, cleaned and smoothed our point cloud, lets see if we can segment trees from it. we'll continue with our previous data from the cleaning photogrammetry post.
+
+```{r packages, message=FALSE, error=FALSE}
+library(lidR)
+library(lidRplugins)
+library(rgl)
+```
+
+```{r load PC}
+smoothed_las <- readLAS("smoothed_PC.laz")
+
+treeTops <- locate_trees(smoothed_las, lmfauto())
+
+plot(smoothed_las) |> add_treetops3d(treeTops)
+
+rglwidget()
+```
